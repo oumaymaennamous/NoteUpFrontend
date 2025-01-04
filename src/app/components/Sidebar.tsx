@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, GraduationCap, BookOpen, Users, Settings, ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react'
+import { LayoutDashboard, GraduationCap, BookOpen, Users, Settings, ChevronLeft, ChevronRight, CalendarDays, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const sidebarItems = [
@@ -11,17 +11,19 @@ const sidebarItems = [
   { icon: GraduationCap, label: 'Gestion Filière', href: '/admin/filieres' },
   { icon: BookOpen, label: 'Gestion Module', href: '/admin/modules' },
   { icon: Users, label: 'Gestion Étudiants', href: '/admin/etudiants' },
-  { icon: Users, label: 'Gestion Professeur', href: '/admin/professeurs' },
+  { icon: Users, label: 'Gestion Professeur', href: '/admin/professeur' },
   { icon: CalendarDays, label: 'New Promo', href: '/admin/promos' },
+  { icon: FileText, label: 'Résultats Étudiants', href: '/admin/resultats' },
   { icon: Settings, label: 'Gestion Comptes', href: '/comptes' },
 ]
+
 export function Sidebar() {
   const [expanded, setExpanded] = useState(true)
   const pathname = usePathname()
 
   return (
     <aside className={cn(
-      "bg-gradient-to-b from-purple-700 to-indigo-900 text-white transition-all duration-300 ease-in-out",
+      "bg-gradient-to-b from-blue-600 to-blue-800 text-white transition-all duration-300 ease-in-out",
       expanded ? "w-64" : "w-20"
     )}>
       <div className="flex flex-col h-screen">
@@ -37,7 +39,7 @@ export function Sidebar() {
           </h2>
           <button
             onClick={() => setExpanded(!expanded)}
-            className="p-2 rounded-full hover:bg-white/10 transition-colors"
+            className="p-2 rounded-full hover:bg-blue-500 transition-colors"
           >
             {expanded ? <ChevronLeft size={24} /> : <ChevronRight size={24} />}
           </button>
@@ -53,8 +55,8 @@ export function Sidebar() {
                     className={cn(
                       "flex items-center space-x-3 p-2 rounded-lg transition-all duration-200 ease-in-out",
                       isActive
-                        ? "bg-white/20 text-white"
-                        : "text-white/60 hover:bg-white/10 hover:text-white"
+                        ? "bg-blue-500 text-white"
+                        : "text-blue-100 hover:bg-blue-700 hover:text-white"
                     )}
                   >
                     <item.icon className={cn("w-6 h-6 transition-all duration-300 ease-in-out", expanded ? "" : "mx-auto")} />
@@ -74,3 +76,4 @@ export function Sidebar() {
     </aside>
   )
 }
+

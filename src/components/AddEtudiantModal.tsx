@@ -1,134 +1,187 @@
-import { useState, useEffect } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+'use client'
+
+import { useState } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-
-interface AddEtudiantModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onAdd: (etudiant: Omit<EtudiantDtoReponse, 'annees'>) => void;
-  filieres: Filiere[];
-  promos: Promo[];
-  fetchSemestres: (promoId: string) => Promise<Semestre[]>;
-}
-
-interface EtudiantDtoReponse {
-  nom: string;
-  prenom: string;
-  cin: string;
-  cne: string;
-  filiere: string;
-  semestre: string;
-  annees: string;
-}
+import { toast } from '@/components/ui/use-toast'
 
 interface Filiere {
-  id: number;
-  nom: string;
+  codeFiliere: number
+  nomFiliere: string
 }
 
-interface Promo {
-  id: number;
-  annee: string;
+interface AddEtudiantModalProps {
+  isOpen: boolean
+  onClose: () => void
+  onAdd: (etudiant: {
+    nom: string
+    prenom: string
+    cin: string
+    cne: string
+    filiere: string
+    semestre: string
+    annees: string
+  }) => void
+  filieres: Filiere[]
+  semestres: string[]
+  annees: string[]
 }
 
-interface Semestre {
-  id: number;
-  nom: string;
-}
+export function AddEtudiantModal({ isOpen, onClose, onAdd, filieres, semestres, annees }: AddEtudiantModalProps) {
+  const initialFormData = {
+    nom: '',
+    prenom: '',
+    cin: '',
+    cne: '',
+    filiere: '',
+    semestre: '',
+    annees: ''
+  }
 
-export function AddEtudiantModal({ isOpen, onClose, onAdd, filieres, promos, fetchSemestres }: AddEtudiantModalProps) {
-  const [nom, setNom] = useState('')
-  const [prenom, setPrenom] = useState('')
-  const [cin, setCin] = useState('')
-  const [cne, setCne] = useState('')
-  const [filiere, setFiliere] = useState('')
-  const [promo, setPromo] = useState('')
-  const [semestre, setSemestre] = useState('')
-  const [semestres, setSemestres] = useState<Semestre[]>([])
-
-  useEffect(() => {
-    if (promo) {
-      fetchSemestres(promo).then((fetchedSemestres) => {
-        setSemestres(fetchedSemestres);
-      });
-    }
-  }, [promo, fetchSemestres]);
+  const [formData, setFormData] = useState(initialFormData)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onAdd({ nom, prenom, cin, cne, filiere, semestre })
+    
+    // Basic validation
+    if (!formData.nom || !formData.prenom || !formData.cin || !formData.cne || 
+        !formData.filiere || !formData.semestre || !formData.annees) {
+      toast({
+        title: "Erreur de validation",
+        description: "Veuillez remplir tous les champs",
+        variant: "destructive"
+      })
+      return
+    }
+
+    onAdd(formData)
+    setFormData(initialFormData)
+  }
+
+  const handleClose = () => {
+    setFormData(initialFormData)
     onClose()
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Ajouter un nouvel étudiant</DialogTitle>
+          <DialogTitle>Ajouter un étudiant</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="nom" className="text-right">Nom</label>
-              <Input id="nom" value={nom} onChange={(e) => setNom(e.target.value)} className="col-span-3" />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="nom">Nom</Label>
+              <Input
+                id="nom"
+                value={formData.nom}
+                onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+                placeholder="Nom de l'étudiant"
+              />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="prenom" className="text-right">Prénom</label>
-              <Input id="prenom" value={prenom} onChange={(e) => setPrenom(e.target.value)} className="col-span-3" />
+            <div className="grid gap-2">
+              <Label htmlFor="prenom">Prénom</Label>
+              <Input
+                id="prenom"
+                value={formData.prenom}
+                onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
+                placeholder="Prénom de l'étudiant"
+              />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="cin" className="text-right">CIN</label>
-              <Input id="cin" value={cin} onChange={(e) => setCin(e.target.value)} className="col-span-3" />
+            <div className="grid gap-2">
+              <Label htmlFor="cin">CIN</Label>
+              <Input
+                id="cin"
+                value={formData.cin}
+                onChange={(e) => setFormData({ ...formData, cin: e.target.value })}
+                placeholder="CIN de l'étudiant"
+              />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="cne" className="text-right">CNE</label>
-              <Input id="cne" value={cne} onChange={(e) => setCne(e.target.value)} className="col-span-3" />
+            <div className="grid gap-2">
+              <Label htmlFor="cne">CNE</Label>
+              <Input
+                id="cne"
+                value={formData.cne}
+                onChange={(e) => setFormData({ ...formData, cne: e.target.value })}
+                placeholder="CNE de l'étudiant"
+              />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="filiere" className="text-right">Filière</label>
-              <Select onValueChange={setFiliere}>
-                <SelectTrigger className="col-span-3">
+            <div className="grid gap-2">
+              <Label htmlFor="filiere">Filière</Label>
+              <Select
+                value={formData.filiere}
+                onValueChange={(value) => setFormData({ ...formData, filiere: value })}
+              >
+                <SelectTrigger>
                   <SelectValue placeholder="Sélectionner une filière" />
                 </SelectTrigger>
                 <SelectContent>
-                  {filieres.map((f) => (
-                    <SelectItem key={f.id} value={f.nom}>{f.nom}</SelectItem>
+                  {filieres.filter(Boolean).map((filiere) => (
+                    <SelectItem 
+                      key={`modal-filiere-${filiere.codeFiliere}`} 
+                      value={filiere.nomFiliere}
+                    >
+                      {filiere.nomFiliere}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="promo" className="text-right">Promotion</label>
-              <Select onValueChange={setPromo}>
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Sélectionner une promotion" />
-                </SelectTrigger>
-                <SelectContent>
-                  {promos.map((p) => (
-                    <SelectItem key={p.id} value={p.annee}>{p.annee}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="semestre" className="text-right">Semestre</label>
-              <Select onValueChange={setSemestre}>
-                <SelectTrigger className="col-span-3">
+            <div className="grid gap-2">
+              <Label htmlFor="semestre">Semestre</Label>
+              <Select
+                value={formData.semestre}
+                onValueChange={(value) => setFormData({ ...formData, semestre: value })}
+              >
+                <SelectTrigger>
                   <SelectValue placeholder="Sélectionner un semestre" />
                 </SelectTrigger>
                 <SelectContent>
-                  {semestres.map((s) => (
-                    <SelectItem key={s.id} value={s.nom}>{s.nom}</SelectItem>
+                  {semestres.filter(Boolean).map((semestre) => (
+                    <SelectItem 
+                      key={`modal-semestre-${semestre}`} 
+                      value={semestre}
+                    >
+                      {semestre}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="annee">Année</Label>
+              <Select
+                value={formData.annees}
+                onValueChange={(value) => setFormData({ ...formData, annees: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionner une année" />
+                </SelectTrigger>
+                <SelectContent>
+                  {annees.filter(Boolean).map((annee) => (
+                    <SelectItem 
+                      key={`modal-annee-${annee}`} 
+                      value={annee}
+                    >
+                      {annee}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
-          <DialogFooter>
-            <Button type="submit">Ajouter</Button>
-          </DialogFooter>
+          <div className="flex justify-end space-x-2">
+            <Button type="button" variant="outline" onClick={handleClose}>
+              Annuler
+            </Button>
+            <Button type="submit">
+              Ajouter
+            </Button>
+          </div>
         </form>
       </DialogContent>
     </Dialog>

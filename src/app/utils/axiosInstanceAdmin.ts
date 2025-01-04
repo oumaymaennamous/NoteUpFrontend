@@ -4,7 +4,6 @@ const axiosInstance = axios.create({
   baseURL: '/admin', // URL du backend Spring Boot
   headers: {
     'Content-Type': 'application/json',
-     
   },
   withCredentials: true, // Pour inclure les cookies si Spring Security est configuré
 }

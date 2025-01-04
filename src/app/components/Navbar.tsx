@@ -1,32 +1,38 @@
 'use client'
 
-import { useState } from 'react'
-import { User, LogOut, Settings, Moon, Sun } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { User, LogOut, Settings, Moon, Sun, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
 
 export function Navbar() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
 
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [theme])
+
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light')
-    // Ici, vous pouvez ajouter la logique pour changer le thème de l'application
+    document.documentElement.classList.toggle('dark')
   }
 
   return (
     <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 flex justify-between items-center">
       <div className="flex items-center space-x-4">
-        <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Sélectionner une promo" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="2023">Promo 2023</SelectItem>
-            <SelectItem value="2022">Promo 2022</SelectItem>
-            <SelectItem value="2021">Promo 2021</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="relative">
+          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <Input
+            type="search"
+            placeholder="Rechercher..."
+            className="pl-8 w-[250px]"
+          />
+        </div>
       </div>
       <div className="flex items-center space-x-4">
         <Button variant="ghost" size="icon" onClick={toggleTheme}>
@@ -34,8 +40,8 @@ export function Navbar() {
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-              <User className="h-5 w-5" />
+            <Button variant="outline" size="icon" className="relative h-8 w-8 rounded-full">
+              <User className="h-5 w-5 text-black dark:text-white" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end" forceMount>

@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { AddFiliereModal } from '@/components/AddFiliereModal'
 import { EditFiliereModal } from '@/components/EditFiliereModal'
 import RootLayoutAdmin from '@/componantes/admin/layout'
+import axios from 'axios';
 
 interface Filiere {
   codeFiliere: number;
@@ -23,20 +24,20 @@ export default function FilieresPage() {
 
   useEffect(() => {
     // Charger les filières depuis le backend
-    axiosInstance.get('/filiere')
+    axios.get('http://localhost:8080/admin/filiere')
       .then(response => setFilieres(response.data))
       .catch(error => console.error('Erreur lors du chargement des filières :', error));
   }, []);
 
   const handleAddFiliere = (newFiliere: Omit<Filiere, 'codeFiliere'>) => {
-    axiosInstance.post('/filiere', newFiliere)
+    axios.post('http://localhost:8080/admin/filiere', newFiliere)
       .then(response => setFilieres([...filieres, response.data]))
       .catch(error => console.error('Erreur lors de l\'ajout d\'une filière :', error));
     setIsAddModalOpen(false);
   };
 
   const handleEditFiliere = (id: number, updatedFiliere: { nomFiliere: string }) => {
-    axiosInstance.put(`/filiere/${id}`, updatedFiliere)
+    axios.put(`http://localhost:8080/admin/filiere/${id}`, updatedFiliere)
       .then(response => {
         setFilieres(filieres.map(filiere => 
           filiere.codeFiliere === id ? response.data : filiere
