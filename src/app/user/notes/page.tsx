@@ -57,7 +57,7 @@ export default function NotesPage() {
                 <SelectValue placeholder="Type d'évaluation" />
               </SelectTrigger>
               <SelectContent>
-                {selectedElement?.modeEvaluations.map(mode => (
+                {selectedElement?.evaluationModes.map(mode => (
                   <SelectItem key={mode.codeMode} value={JSON.stringify(mode)}>
                     {mode.type}
                   </SelectItem>

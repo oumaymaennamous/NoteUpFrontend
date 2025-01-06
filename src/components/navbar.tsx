@@ -38,7 +38,7 @@ export function Navbar() {
               Dashboard
             </Link>
             <Link
-              href="/user/module"
+              href="/user/element"
               className="transition-colors hover:text-foreground/80 text-foreground"
             >
               Gestion Modules

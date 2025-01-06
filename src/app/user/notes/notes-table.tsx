@@ -51,8 +51,8 @@ export function NotesTable({ elementId, modeId }: NotesTableProps) {
         const absentsMap: { [key: number]: boolean } = {}
         
         evaluationsData.forEach(evaluation => {
-          notesMap[evaluation.etudiant.codeEtudiant] = evaluation.note
-          absentsMap[evaluation.etudiant.codeEtudiant] = evaluation.absance
+          notesMap[evaluation.codeEtudiant] = evaluation.note
+          absentsMap[evaluation.codeEtudiant] = evaluation.absance
         })
         
         setNotes(notesMap)

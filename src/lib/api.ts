@@ -5,11 +5,9 @@ export interface ElementModule {
   nameElementModule: string;
   coefficient: number;
   active: boolean;
-  module: {
-    codeModule: number;
-    nameModule: string;
-  };
-  modeEvaluations: ModeEvaluation[];
+  moduleName: string;
+  codeModule: number;
+  evaluationModes: ModeEvaluation[];
 }
 
 export interface ModeEvaluation {
@@ -30,15 +28,10 @@ export interface Evaluation {
   id_evalution?: number;
   note: number;
   absance: boolean;
-  etudiant: {
-    codeEtudiant: number;
-  };
-  elementModule: {
-    codeElementModule: number;
-  };
-  mode_evaluation: {
-    codeMode: number;
-  };
+  codeEtudiant: number;
+  codeElementModule: number;
+  codeMode: number;
+   
 }
 
 export interface EvaluationDTO {
